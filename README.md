@@ -20,6 +20,12 @@ In addition, this project will include:
 
 ## Wireframes:
 
+
+
+
+![Screenshot (728)](https://user-images.githubusercontent.com/24309253/205205528-60e3f77d-2fae-4e81-ae53-39db308dd36f.png)
+
+
 •	Nav links include links to this project's Github repo, and linkedin.
 •	Game controls will include start and stop. A button on the bottom right will include the ability to mute music.
 •	Score display on the right, display
