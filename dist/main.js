@@ -7,15 +7,16 @@
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/background.js":
 /*!***************************!*\
   !*** ./src/background.js ***!
   \***************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("class Background{\n    constructor(){\n        \n    }\n\n}\n\n//# sourceURL=webpack:///./src/background.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _png_asset_management__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./png_asset_management */ \"./src/png_asset_management.js\");\n\n\n\n\n\n\nclass Background{\n    constructor(){\n        this.background;\n    }\n\n    draw(){\n\n    }\n    \n    animate(){\n\n\n    }\n    \n\n}\n\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Background);\n\n//# sourceURL=webpack:///./src/background.js?");
 
 /***/ }),
 
@@ -25,8 +26,7 @@ eval("class Background{\n    constructor(){\n        \n    }\n\n}\n\n//# sourceU
   \*********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./player */ \"./src/player.js\");\n/* harmony import */ var _sandbag__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./sandbag */ \"./src/sandbag.js\");\n/* harmony import */ var _background__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./background */ \"./src/background.js\");\n/* harmony import */ var _background__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_background__WEBPACK_IMPORTED_MODULE_2__);\n\n\n\n\nclass Game{\n    constructor(ctx){\n        this.ctx =ctx;\n        this.dimensions = {width: canvas.width, height: canvas.height};\n        \n    }\n\n    animate(){\n\n    }\n    renderFrame(){\n\n    }\n\n    newGame(){\n        \n\n    }\n\n  \n}\n\n//# sourceURL=webpack:///./src/game.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ Game)\n/* harmony export */ });\n/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./player */ \"./src/player.js\");\n/* harmony import */ var _sandbag__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./sandbag */ \"./src/sandbag.js\");\n/* harmony import */ var _background__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./background */ \"./src/background.js\");\n\n\n\n\nclass Game{\n    constructor(ctx){\n        this.ctx =ctx;\n        this.dimensions = {width: canvas.width, height: canvas.height};\n    }\n\n    animate(){\n        \n    }\n    renderFrame(){\n\n    }\n\n    newGame(){\n        \n\n    }\n\n  \n}\n\n//# sourceURL=webpack:///./src/game.js?");
 
 /***/ }),
 
@@ -36,7 +36,6 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _pla
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game */ \"./src/game.js\");\n\n\n\nconst canvas = document.getElementById(\"sandbag-game\");\nconst ctx = canvas.getContext(\"2d\");\n\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ }),
@@ -47,8 +46,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _gam
   \***************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n//refers to any body that must obey the laws of game physics\nconst PHYSICS_CONSTANTS ={\n    GRAVITY: -4.8,\n\n};\n\n\nclass PhysicsObject{\n    constructor(){\n        this.height;\n        this.width;\n        this.mass;\n        this.pos;\n        \n    }\n\n    inCollision(){\n\n    }\n\n\n\n}\n\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PhysicsObject);\n\n//# sourceURL=webpack:///./src/phy_object.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _png_asset_management__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./png_asset_management */ \"./src/png_asset_management.js\");\n\n \n\n//refers to any body that must obey the laws of game physics\nconst PHYSICS_CONSTANTS ={\n    GRAVITY: -4.8,\n    DEFAULT_PLAYER_POS: [40, 20],\n    DEFAULT_BAG_POS: [50, 20],\n\n};\n\n\nclass PhysicsObject{\n    constructor(){\n        this.height;\n        this.width;\n        this.mass;\n        this.pos;\n        this.accelX = 0;\n        this.accelY = 0;\n        this.velX = 0;\n        this.velY = 0;\n        this.damage; //damage coefficient\n        this.force; //force coefficient\n        this.frames;\n        \n    }\n\n    inCollision(){\n\n    }\n\n    draw(){\n\n    }\n\n    animate(){\n\n    }\n\n}\n\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PhysicsObject);\n\n//# sourceURL=webpack:///./src/phy_object.js?");
 
 /***/ }),
 
@@ -58,8 +56,17 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \***********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _phy_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./phy_object */ \"./src/phy_object.js\");\n\n\n\nclass Player extends _phy_object__WEBPACK_IMPORTED_MODULE_0__[\"default\"]{\n    constructor(options){\n\n    }\n\n    lightAttack(){\n\n    }\n\n    chargeAttack(){\n\n    }\n\n    jump(){\n\n    }\n\n}\n\n//character classes\n\n\nclass Noctis extends Player{\n\n}\n\n\nclass Tifa extends Player{\n\n}\n\nclass TwoB extends Player{\n\n}\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({Player, Noctis, Tifa, TwoB}); \n\n//# sourceURL=webpack:///./src/player.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _phy_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./phy_object */ \"./src/phy_object.js\");\n\n\nclass Player extends _phy_object__WEBPACK_IMPORTED_MODULE_0__[\"default\"]{\n    constructor(options){\n\n    }\n\n\n    move(){\n        \n    }\n\n    lightAttack(){\n\n    }\n\n    chargeAttack(){\n\n    }\n\n    jump(){\n\n    }\n\n}\n\n//character classes\n\n\nclass Noctis extends Player{\n\n}\n\n\nclass Tifa extends Player{\n\n}\n\nclass TwoB extends Player{\n\n}\n\nclass TestChar extends Player{\n    \n}\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({Player, Noctis, Tifa, TwoB, TestChar}); \n\n//# sourceURL=webpack:///./src/player.js?");
+
+/***/ }),
+
+/***/ "./src/png_asset_management.js":
+/*!*************************************!*\
+  !*** ./src/png_asset_management.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n\n\nclass PhotoImport{\n    constructor (){\n\n    }\n\n    importEffectAssets(){\n        \n    }\n\n    importCharacterAssets(){\n\n    }\n\n\n    importSandbagAssets(){\n\n\n    }\n\n    importBackgroundAsset(){\n\n    }\n}\n\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PhotoImport);\n\n//# sourceURL=webpack:///./src/png_asset_management.js?");
 
 /***/ }),
 
@@ -69,8 +76,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _phy_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./phy_object */ \"./src/phy_object.js\");\n\n\n\nclass SandbagTotem{\n    constructor(){\n\n    }\n\n    launchSandbag(){\n\n    }\n\n    takeCollision(){\n\n    }\n\n    takeDamage(){\n\n    }\n\n}\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SandbagTotem);\n\n//# sourceURL=webpack:///./src/sandbag.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _phy_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./phy_object */ \"./src/phy_object.js\");\n\n\n\nclass SandbagTotem{\n    constructor(){\n\n    }\n\n    launchSandbag(){\n\n    }\n\n    \n\n    takeCollision(){\n\n    }\n\n    absorbDamage(){\n\n    }\n\n}\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SandbagTotem);\n\n//# sourceURL=webpack:///./src/sandbag.js?");
 
 /***/ })
 
@@ -101,18 +107,6 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
