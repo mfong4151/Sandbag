@@ -8,7 +8,7 @@ const DUMMYBG ={
 export default class Background{
     constructor(dimensions){
         this.dimensions = dimensions;
-        this.dynamicWidth = this.dimensions.width - (this.dimensions.width/8)
+        this.dynamicWidth = this.dimensions.width
         this.background;
     }
 
@@ -21,6 +21,11 @@ export default class Background{
         ctx.fillStyle = 'black'
         ctx.fillRect(0, this.dimensions.height * (85/100), this.dynamicWidth, 4);
 
+
+        //For bounce points
+
+        ctx.fillStyle = 'blue'
+        ctx.fillRect(0, 640, this.dynamicWidth, 4);
     }
     
     animate(ctx){

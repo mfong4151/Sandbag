@@ -1,25 +1,13 @@
+
+
+
+
 class PhotoImport{
     constructor (){
 
     }
 
-    importEffectAssets(){
-
-    }
-
-    importCharacterAssets(){
-
-    }
-
-
-    importSandbagAssets(){
-
-
-    }
-
-    importBackgroundAsset(){
-
-    }
+    
 }
 
 

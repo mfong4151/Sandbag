@@ -8,3 +8,7 @@
 #sandbag-game {
   padding-left: 40px;
 }
+
+h1 {
+  user-select: none;
+}
