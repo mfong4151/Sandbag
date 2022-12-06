@@ -1,12 +1,14 @@
 //refers to any body that must obey the laws of game physics
 
+import Player from "./player";
+
 const CONSTANTS = {
     BOUNCE_OFFSET: 10,
 
 }
 
 
-class PhysicsObject{
+export default class PhysicsObject{
 
     constructor(dimensions, options){
         //Super overridden variables
@@ -21,22 +23,23 @@ class PhysicsObject{
             x: options.defaultPosition.x, 
             y: options.defaultPosition.y,
             x2: options.defaultPosition.x + options.width,
-            y2: options.defaultPosition.y + options.height
+            y2: options.defaultPosition.y + options.height,
+            defaultY: options.defaultPosition.y
         }
         this.bounceOffset = options.bounceOffset;
 
         //if character is idle, attack, in jump, etc.
         this.state = 0;
         //We should reevaluate if we need an "in jump"
-        this.inJump = false;
-        this.inBounce = false;
-        this.gravity = 4.8;
-        this.vel ={x: 0, y: 0};
+        this.gravity = .5;
+        this.drag = 1
+        this.vel ={x: 0, y: 20};
         this.accel= { x:0, y:0 };
-        this.bouncePoints = this.setBouncePoints(dimensions);
+        
+        this.boundaries = this.setBoundaries(dimensions);
     }
 
-    setBouncePoints(dimensions){
+    setBoundaries(dimensions){
         let leftBound, rightBound, floorBound, ceilingBound;
         leftBound = 0;
         ceilingBound = 0;
@@ -45,15 +48,15 @@ class PhysicsObject{
     
         return{leftBound,rightBound, floorBound, ceilingBound}
 
-
     }
+
 
 
     //change countdownOver after we get countdown running
     outOfBounds(countdownOver = false){
-        if(this.pos.x <= this.bouncePoints.leftBound || this.pos.y <= this.bouncePoints.ceilingBound 
-            || this.pos.x >= this.bouncePoints.rightBound|| this.pos.y > this.bouncePoints.floorBound){
-
+        if(this.pos.x <= this.boundaries.leftBound || this.pos.y <= this.boundaries.ceilingBound 
+            || this.pos.x >= this.boundaries.rightBound){
+            
                 return true;
             }
         return false;
@@ -62,71 +65,62 @@ class PhysicsObject{
     //Used to "bounce" the physical object if it gets out of bounds
 
     bounce(){
-        this.inBounce = true;
         
-        if(this.pos.x <= this.bouncePoints.leftBound ){
+        
+        if(this.pos.x <= this.boundaries.leftBound ){
             this.pos.x = 3;
+            this.pos.x2 = 3 + this.width
             this.direction.horizontal *= -1;
         }
         
-        if(this.pos.x + this.width >= this.bouncePoints.rightBound){
-            this.pos.x = this.bouncePoints.rightBound - 10;
+        if(this.pos.x + this.width >= this.boundaries.rightBound){
+            this.pos.x = this.boundaries.rightBound - 10;
             this.direction.horizontal *= -1;
 
         }
         
-        if(this.pos.y <= this.bouncePoints.ceilingBound ){ 
-            this.pos.y = 3
+        if(this.pos.y <= this.boundaries.ceilingBound ){ 
+            this.pos.y2 = 3 + this.height
             this.direction.vertical *= -1;
         }
 
-        if(this.pos.y >= this.bouncePoints.floorBound){
+        //if(this.pos.y >= this.boundaries.floorBound){
 
-            this.pos.y = this.bouncePoints.floorBound - this.height;
-            this.direction.vertical *= -1;
-        }
-        
+        //    this.pos.y = this.boundaries.floorBound - this.height;
+        //}
+        console.log(this)
     }
-
-
     moveHorizontal(){
+        
+        
         this.pos.x += this.vel.x * this.direction.horizontal
     }
 
+
+
+
     moveVertical(){
-        this.pos.y -= this.vel.y * this.direction.vertical
+        
+        this.pos.y += this.vel.y;
+        this.pos.y2 += this.vel.y
+        
+        if(this.pos.y + this.vel.y <= this.boundaries.floorBound){
+            this.vel.y += this.gravity;
+        }
 
-    }
-
-    applyGravity(gravity){
-        if (this.pos.y <= this.floor){
-        this.vel.y += gravity
+        else{
+            this.vel.y = 0;
+            if (this instanceof Player){
+                this.setStateIdle()
+            }
         }
     }
-    inCollision(){
+   
+   
 
-    }
-
-    draw(ctx){
-
-        this.frameChoice();
-        ctx.drawImage(
-            this.activeFrameSet,
-             this.frame * this.width,
-             0,
-             this.width,
-             this.height,
-            this.pos.x,
-            this.pos.y,
-            this.width,
-            this.height
-            )
-
-        this.frameSetAnimation()
-
-    }
 
     animate(ctx){
+        this.update()
         this.draw(ctx);
     }
 
@@ -138,4 +132,3 @@ class PhysicsObject{
 }
 
 
-export default PhysicsObject;

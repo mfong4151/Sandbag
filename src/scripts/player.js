@@ -8,7 +8,7 @@ const CONSTANTS = {
     BOUNCE_OFFSET: 3,
     DEFAULT_DIRECTION:{
         HORIZONTAL: 1,
-        VERTICAL: 1
+        VERTICAL: -1
     },  //refers to the direction we're facing, 1 = right, -1 = left
     TEST_COLOR :'blue',
     DEFAULT_ACCEL: 0,
@@ -45,23 +45,32 @@ export default class Player extends PhysicsObject{
                 mass: CONSTANTS.MASS,
                 directionHorizontal: CONSTANTS.DEFAULT_DIRECTION.HORIZONTAL,
                 directionVertical: CONSTANTS.DEFAULT_DIRECTION.VERTICAL,
-                defaultPosition:{x: dimensions.width/3,
-                                y: dimensions.floorPlane - CONSTANTS.HEIGHT + 5
+                defaultPosition:{x: 100,
+                                y: 100,
                                 }
             });
-            
+        
         this.activeFrameSet;
         this.frame = 0;
         this.gameFrame = 0;
         this.lightAttack = {
+                            attacking: false,
                             damage: 20,
                             velocityInput: 50,
-                            };
+                            animation:{
+                                width: 224,
+                                height: 148
+                            }},
 
         this.chargeAttack = {
+                                attacking: false,
                                 damage: 50,
-                                velocityInput: 200
-                            };
+                                velocityInput: 200,
+                                animation:{
+                                    width: 224,
+                                    height: 148
+                            }
+        }
     }
 
 
@@ -78,10 +87,10 @@ export default class Player extends PhysicsObject{
             if (this.direction.horizontal === -1) this.activeFrameSet = this.animations.jumpLeft;
             else if (this.direction.horizontal === 1) this.activeFrameSet = this.animations.jumpRight;
         }
-        //else if (this.state === CONSTANTS.STATE.ATTACK){
-        //    if (this.direction.horizontal === -1) this.activeFrameSet = this.animations.postDamageLeft;
-        //    else if (this.direction.horizontal === 1) this.activeFrameSet = this.animations.postDamageRight;
-        //}
+        else if (this.state === CONSTANTS.STATE.ATTACK){
+            if (this.direction.horizontal === -1) this.activeFrameSet = this.animations.attackLeft;
+            else if (this.direction.horizontal === 1) this.activeFrameSet = this.animations.attackRight;
+        }
 
     }
 
@@ -89,8 +98,8 @@ export default class Player extends PhysicsObject{
     frameSetAnimation(){
         
         if (this.state === CONSTANTS.STATE.IDLE || this.state === CONSTANTS.STATE.ATTACK || this.state === CONSTANTS.STATE.CHARGE_ATTACK){
-            if (this.gameFrame % 13 === 0){
-                if (this.frame < 3) this.frame++;
+            if (this.gameFrame === 0){
+                if (this.frame < 15) this.frame++;
                 else this.frame = 0;
             }
             this.gameFrame ++;
@@ -108,110 +117,139 @@ export default class Player extends PhysicsObject{
                   else this.frame = 0;
                 }
                 this.gameFrame ++
+        }else if (this.state === CONSTANTS.STATE.ATTACK){
+               if (this.gameFrame % 2 === 0){
+                  if (this.frame < 1) this.frame++;
+                  else this.frame = 0;
+                }
         }
     }
+
+    _drawAttackFrames(ctx){
+        ctx.drawImage(
+            this.activeFrameSet,
+             this.frame * this.lightAttack.animation.width,
+             0,
+             this.lightAttack.animation.width,
+             this.lightAttack.animation.height,
+            this.pos.x -55,
+            this.pos.y -30,
+            this.lightAttack.animation.width,
+            this.lightAttack.animation.height
+        
+        )}
+
+    draw(ctx){
+        this.frameChoice();
     
-    decelerateX(){
-
-        //Still might need fine tweeking
-        //console.log(this.vel.x);
-
-        if(this.accel.x > 0) this.accel.x += .3;
-        if (this.vel.x > 0) this.vel.x += .6;
+        if(this.state === 3) this._drawAttackFrames(ctx);
+        else{
+        ctx.drawImage(
+            this.activeFrameSet,
+             this.frame * this.width,
+             0,
+             this.width,
+             this.height,
+            this.pos.x,
+            this.pos.y,
+            this.width,
+            this.height
+            )
+        }
+        this.frameSetAnimation();
+    }
+    
+    
+    increaseVelX(){
+        if (this.vel.x < 12) this.vel.x = 12
+        else if (this.vel.x >= 14 && this.vel.x < 25) this.vel.x += .5
         
     }
-
-    deccelerateY(){
-        if(this.accel.y > 0) this.accel.y -= .3;
-        if (this.vel.y >1) this.vel.y -= .6;
-    }
-  
-
-    increaseAccelX(){
-        this.state = 1
-        if(this.accel.x < this.vel.x/2 || this.accel.x < 2 ){
-
-            if(this.accel.x <= 0){
-                this.accel.x += 2
-            }
-            this.accel.x += .3;
-        }
-    }
-
-    increaseVel(){
-        if (this.vel.x < 18) this.vel.x += this.accel.x;
-
-
-        if (this.vel.y < 18) this.vel.y += this.accel.y;
-    }
-
-
-    turnIdle(){
-        if (this.vel.x <= 0 && this.vel.y <= 0) this.state = CONSTANTS.STATE.IDLE;
-    }
-
-    resumeIdle(){
-        this.state = CONSTANTS.STATE.IDLE
-    }
-
-    jump(){
-        this.state = CONSTANTS.STATE.JUMP
-        this.accel.y = 2;
-        this.vel.y = 15;
-        this.inJump = true;
-        this.moveVertical();
     
+    changeAnimationState(attacking){
+        if(attacking) this.state = CONSTANTS.STATE.ATTACK;
+        else if (this.vel.y < 0) this.state = CONSTANTS.STATE.JUMP;
+        else if (this.vel.x === 0 && this.vel.y === 0) this.state = CONSTANTS.STATE.IDLE;
+        else if (this.vel.y === 0 && this.vel.x > 0) this.state = CONSTANTS.STATE.WALK;
+        
+    }
+    
+    setStateIdle(){
+            this.state = CONSTANTS.STATE.IDLE;
+    }
+    
+    jump(){
+
+        this.vel.y -= 15;
     }
 
-    softLanding(){
-
-        this.accel.y = 0;
-        this.inBounce = false;
-
+    inLightAttack(){
+        if (this.lightAttack.attacking === true){
+            this.state = CONSTANTS.STATE.ATTACK;
+            return true;
+        }
+        return false;
     }
+
+    update(){
+        this.state = CONSTANTS.STATE.ATTACK
+        let attacking = this.inLightAttack() // || this.inChargeAttack()
+        
+        this.moveVertical();
+        this.moveHorizontal();
+        
+        this.changeAnimationState(attacking);
+    
+        
+    }
+    
+    endHorizontalMovement(){
+        this.vel.x = 0
+    }
+    moveHorizontal(){
+        this.pos.x2 += this.vel.x * this.direction.horizontal;
+        this.pos.x += this.vel.x * this.direction.horizontal;
+    }
+
+
 
     move(wasd){
-        if (!this.inBounce){
         switch (wasd){
 
                 case 'w':
-                    this.direction.vertical = 1
-                    this.jump()
+                    if (this.state !== CONSTANTS.STATE.JUMP)
+                    this.jump();
+                    //this.moveVertical()
+                    //console.log(this.pos.y)
+
                     break
                 case 'a':
                     this.direction.horizontal = -1;
-                    this.increaseAccelX();
-                    this.increaseVel()
-                    ;
+                    this.increaseVelX();
                     break
 
                 case 'd':
                     this.direction.horizontal = 1;
-                    this.increaseAccelX();
-                    this.increaseVel()
+                    this.increaseVelX()
+
                     break
 
                 case 's':
                     this.direction.vertical = -1
+                    break
             }
-        }
-
-
-
     }
 
 
     doLightAttack(){
-        //uncomment this when we've implemented proper sprites
-        this.state = CONSTANTS.STATE.ATTACK;
-
+        this.lightAttack.attacking = true;
     }
 
-    chargeAttack(){
+    doChargeAttack(){
         this.state = CONSTANTS.STATE.CHARGE_ATTACK;
-
+        
     }
-    chargeAttackRelease(){
+    releaseChargeAttack(){
 
     }
 }

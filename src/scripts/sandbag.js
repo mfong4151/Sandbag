@@ -7,7 +7,7 @@ const CONSTANTS = {
     MASS: 10,
     DEFAULT_DIRECTION:{
         HORIZONTAL: -1,
-        VERTICAL: 1
+        VERTICAL: -1
     },  //refers to the direction we're facing, 1 = right, -1 = left
     DEFAULT_ACCEL: 0,
     DEFAULT_VEL: 0,
@@ -18,6 +18,7 @@ const CONSTANTS = {
         IDLE: 0,
         DAMAGED: 1,
         RECOVERY: 2
+        
     },
     ANIMATION: {
         IDLE_FRAMES: 5,
@@ -45,7 +46,7 @@ export default class SandbagTotem extends PhysicsObject{
             testColor: CONSTANTS.TEST_COLOR,
             bounceOffset: CONSTANTS.BOUNCE_OFFSET,
             defaultPosition:{x: dimensions.width/2,
-                y: dimensions.floorPlane - CONSTANTS.HEIGHT + 10
+                y: 100
             }
         });
 
@@ -105,25 +106,26 @@ export default class SandbagTotem extends PhysicsObject{
 
         }else if (this.state === 1){ //This logic needs to be tightened, should show damaged 1, then transition if no damage is done
             this.frame = 0;
-            if (this.gameFrame % 100 === 0){
-                this.state = 2;
+            if (this.gameFrame % 127 === 0){
+                this.state = 0;
             }
 
             this.gameFrame ++
-
-        }else if (this.state === 2){
-            this.frame = 0
-            if (this.gameFrame % 4 === 0){D
-                this.state = 0;
-            }
         }
+        //}else if (this.state === 2){
+        //    this.frame = 0
+        //    if (this.gameFrame % 4 === 0){
+        //        this.state = 0;
+        //    }
+        //}
 
     }
     
+
+   
     inCollision(playerChar){
+
         //this can be optimized by looking at the player char state
-        playerChar.pos.x2 = playerChar.pos.x + playerChar.width;
-        playerChar.pos.y2 = playerChar.pos.y + playerChar.height;
         this.pos.x2 = this.pos.x + this.width;
         this.pos.y2 = this.pos.y + this.height;
         //if the x2 coordinate of the player is in between the xs
@@ -134,13 +136,11 @@ export default class SandbagTotem extends PhysicsObject{
             {
             return true
         }
-
         return false
     }
 
     convertMomentum(playerChar){
-        let transferedVelocityY, transferedVelocityX
-
+        let transferedVelocityY = 0, transferedVelocityX = 0
         this.direction.horizontal = playerChar.direction.horizontal
         //If the player is walking, or in jump, decriment their velocity
         if (playerChar.state === 1 || playerChar.state === 2){
@@ -162,50 +162,50 @@ export default class SandbagTotem extends PhysicsObject{
 
             this.hp += activeAttack.damage;
             transferedVelocityX = activeAttack.velocityInput;
-            transferedVelocityY = transferedVelocityX * playerChar.direction.vertical;
-            transferedVelocityX *= playerChar.direction.horizontal;
-            playerChar.resumeIdle();
+            transferedVelocityY = transferedVelocityX * playerChar.direction.vertical/this.mass;
+            transferedVelocityX *= playerChar.direction.horizontal/this.mass;
+            if (playerChar.vel.y === 0) transferedVelocityY = 0; 
+            if (playerChar.vel.x === 0) transferedVelocityX = 0;
+        
         }
-        console.log(this.hp)
         this.vel.x += transferedVelocityX;
         this.vel.y += transferedVelocityY;
         
-        
     }
 
-    convertDamage(){
 
-    }
-    
-
-    decelerateX(){
-
-        if(this.accel.x > 0) this.accel.x -= .1;
-        
-    }
-    deccelerateY(){
-        if(this.accel.y > 0) this.accel.y -= .1;
-
-    }
-  
-    increaseAccelX(){
-        
-        if(this.accel.x < 25){
-            this.accel.x += 1;
+    increaseVelX(){
+        if (this.vel.x < 12) this.vel.x = 12
+        else if (this.vel.x >= 14 && this.vel.x < 25) this.vel.x += .5
+        if(this.pos.x + this.vel.x <= this.boundaries.leftBound){
+            this.vel.x -= this.drag;
         }
     }
+        
+    draw(ctx){
 
-    increaseAccelY(){
-
-    }
-
-    increaseVel(){
-        if (this.vel.x < 500){
-        this.vel.x += this.direction.horizontal* this.accel.x * this.hp;
-        this.vel.y += this.direction.vertical * this.accel.y * this.hp;
-        }
+        this.frameChoice();
+        
+        ctx.drawImage(
+            this.activeFrameSet,
+             this.frame * this.width,
+             0,
+             this.width,
+             this.height,
+            this.pos.x,
+            this.pos.y,
+            this.width,
+            this.height
+            )
+        this.frameSetAnimation();
     }
     
+    update(){
+        this.moveHorizontal();
+        this.moveVertical();
+        //this.changeAnimationState();
+    }
+
    
 
     absorbDamage(){

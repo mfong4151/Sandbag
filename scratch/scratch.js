@@ -1,29 +1,6 @@
+if(this.player.pos.y2 < this.bouncePoints.floorLine){
+    this.pos += this.gravity
+}
 
-//dimensions
-
-floorPlane
-: 
-612
-height
-: 
-720
-width
-: 
-1580
-
-//mapDimensions
-floorPlane
-: 
-612
-height
-: 
-472
-width
-: 
-790
-
-
-{width: 1580, height: 720, floorPlane: 612} 
-{width: 790, height: 472, floorPlane: 612}
-
-{width: 526.6666666666666, height: 527, floorPlane: 527}
+//player no bounce on the bottom
+//sandbag bounce on the sides
