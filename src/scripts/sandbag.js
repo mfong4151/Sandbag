@@ -4,14 +4,14 @@ import PhysicsObject from "./phy_object";
 const CONSTANTS = {
     HEIGHT: 150,
     WIDTH: 130,
-    MASS: 10,
+    MASS: 40,
     DEFAULT_DIRECTION:{
         HORIZONTAL: -1,
         VERTICAL: -1
     },  //refers to the direction we're facing, 1 = right, -1 = left
     DEFAULT_ACCEL: 0,
     DEFAULT_VEL: 0,
-    DEFAULT_HP: 0,
+    DEFAULT_HP: 1,
     GRAVITY: 4.8,
 
     STATE: {  
@@ -35,7 +35,6 @@ const CONSTANTS = {
 export default class SandbagTotem extends PhysicsObject{
     constructor(dimensions){
 
-        //10 here is a manual offset, im not sure why we need it, but it fixes the picture
         super(dimensions,
             {
             height: CONSTANTS.HEIGHT,
@@ -49,14 +48,14 @@ export default class SandbagTotem extends PhysicsObject{
                 y: 100
             }
         });
-
+        this.animationDirection =  CONSTANTS.DEFAULT_DIRECTION.HORIZONTAL
         //this.hp = CONSTANTS.DEFAULT_HP;
-        this.hp = 20
+        this.hp = CONSTANTS.DEFAULT_HP;
         this.animations = this.importSpriteSheets(); 
         this.activeFrameSet;
         this.frame = 0;
         this.gameFrame = 0;
-        
+        this.gravity = .75
     }
 
 
@@ -81,16 +80,16 @@ export default class SandbagTotem extends PhysicsObject{
     frameChoice(){
 
         if (this.state === CONSTANTS.STATE.IDLE){
-             if (this.direction.horizontal === -1) this.activeFrameSet = this.animations.idleLeft;
-             else if (this.direction.horizontal === 1) this.activeFrameSet = this.animations.idleRight;
+             if (this.animationDirection === 1) this.activeFrameSet = this.animations.idleLeft;
+             else if (this.animationDirection === -1) this.activeFrameSet = this.animations.idleRight;
 
         }else if (this.state === CONSTANTS.STATE.DAMAGED){
-            if (this.direction.horizontal === -1) this.activeFrameSet = this.animations.damagedLeft;
-            else if (this.direction.horizontal === 1) this.activeFrameSet = this.animations.damagedRight;
+            if (this.animationDirection === 1) this.activeFrameSet = this.animations.damagedLeft;
+            else if (this.animationDirection === -1) this.activeFrameSet = this.animations.damagedRight;
 
         }else if (this.state === CONSTANTS.STATE.RECOVERY){
-            if (this.direction.horizontal === -1) this.activeFrameSet = this.animations.postDamageLeft;
-            else if (this.direction.horizontal === 1) this.activeFrameSet = this.animations.postDamageRight;
+            if (this.animationDirection === 1) this.activeFrameSet = this.animations.postDamageLeft;
+            else if (this.animationDirection === -1) this.activeFrameSet = this.animations.postDamageRight;
         }
     }
     
@@ -106,7 +105,7 @@ export default class SandbagTotem extends PhysicsObject{
 
         }else if (this.state === 1){ //This logic needs to be tightened, should show damaged 1, then transition if no damage is done
             this.frame = 0;
-            if (this.gameFrame % 127 === 0){
+            if (this.vel.y === 0 && this.vel.x < .3){
                 this.state = 0;
             }
 
@@ -125,17 +124,25 @@ export default class SandbagTotem extends PhysicsObject{
    
     inCollision(playerChar){
 
-        //this can be optimized by looking at the player char state
+
         this.pos.x2 = this.pos.x + this.width;
         this.pos.y2 = this.pos.y + this.height;
-        //if the x2 coordinate of the player is in between the xs
-        if(((playerChar.pos.x2 >= this.pos.x && playerChar.pos.x2 <= this.pos.x2)
+        let lightAttackAOE = playerChar.lightAttack.areaOfEffect;
+
+
+        if((playerChar.state === 0 || playerChar.state === 1) && ((playerChar.pos.x2 >= this.pos.x && playerChar.pos.x2 <= this.pos.x2)
             || (playerChar.pos.x <= this.pos.x2 && playerChar.pos.x >= this.pos.x) )&& 
             ((playerChar.pos.y2 >= this.pos.y && playerChar.pos.y2 <= this.pos.y2)
-            || (playerChar.pos.y <= this.pos.y2 && playerChar.pos.y >= this.pos.y)))
-            {
-            return true
-        }
+            || (playerChar.pos.y <= this.pos.y2 && playerChar.pos.y >= this.pos.y))){
+                return true;
+
+        }else if((playerChar.state === 3 || playerChar.state === 4) && 
+            ((lightAttackAOE.right >= this.pos.x && lightAttackAOE.right <= this.pos.x2)||
+             (lightAttackAOE.left <= this.pos.x2 && lightAttackAOE.right >= this.pos.x) )&& 
+            ((lightAttackAOE.down >= this.pos.y && lightAttackAOE.down <= this.pos.y2)||
+            (lightAttackAOE.up <= this.pos.y2 && lightAttackAOE.up >= this.pos.y))){
+        return true
+    }
         return false
     }
 
@@ -144,8 +151,8 @@ export default class SandbagTotem extends PhysicsObject{
         this.direction.horizontal = playerChar.direction.horizontal
         //If the player is walking, or in jump, decriment their velocity
         if (playerChar.state === 1 || playerChar.state === 2){
-            transferedVelocityX = playerChar.vel.x * playerChar.direction.horizontal/this.mass 
-            transferedVelocityY = playerChar.vel.y * playerChar.direction.vertical/this.mass
+            transferedVelocityX = playerChar.vel.x * playerChar.direction.horizontal/this.mass;
+            transferedVelocityY = playerChar.vel.y * playerChar.direction.vertical/this.mass;
             playerChar.vel.x -= transferedVelocityX;
             playerChar.vel.y -= transferedVelocityY;
 
@@ -156,31 +163,22 @@ export default class SandbagTotem extends PhysicsObject{
             let activeAttack;
 
             this.state = CONSTANTS.STATE.DAMAGED; 
-            //light attack
             if (playerChar.state === 3) activeAttack = playerChar.lightAttack;
             else activeAttack = playerChar.chargeAttack;
-
+            //incriment hp
             this.hp += activeAttack.damage;
-            transferedVelocityX = activeAttack.velocityInput;
-            transferedVelocityY = transferedVelocityX * playerChar.direction.vertical/this.mass;
-            transferedVelocityX *= playerChar.direction.horizontal/this.mass;
-            if (playerChar.vel.y === 0) transferedVelocityY = 0; 
-            if (playerChar.vel.x === 0) transferedVelocityX = 0;
-        
+            this.direction.horizontal = playerChar.direction.horizontal;
+
+             
+            this.vel.x += activeAttack.velocityInput.x/this.mass * this.hp;
+
+            this.vel.y -= activeAttack.velocityInput.y/this.mass * this.hp;
+            //transferedVelocityX *= playerChar.direction.horizontal/this.mass * this.hp;
+      
         }
-        this.vel.x += transferedVelocityX;
-        this.vel.y += transferedVelocityY;
-        
+      
     }
 
-
-    increaseVelX(){
-        if (this.vel.x < 12) this.vel.x = 12
-        else if (this.vel.x >= 14 && this.vel.x < 25) this.vel.x += .5
-        if(this.pos.x + this.vel.x <= this.boundaries.leftBound){
-            this.vel.x -= this.drag;
-        }
-    }
         
     draw(ctx){
 
@@ -199,17 +197,33 @@ export default class SandbagTotem extends PhysicsObject{
             )
         this.frameSetAnimation();
     }
+
+
+    applyDrag(){
+
+        if(this.vel.y <= 0 && this.vel.x > 0){
+            this.vel.x -= this.drag;
+        }
+    }
     
+    faceCharacter(playerChar){
+        if (playerChar.pos.x  < this.pos.x) this.animationDirection = 1;
+        else this.animationDirection = -1;
+
+    }
+
+    moveHorizontal(){
+        this.pos.x += this.vel.x * this.direction.horizontal
+    }
+
+  
+ 
+
     update(){
+        this.applyDrag()
         this.moveHorizontal();
         this.moveVertical();
         //this.changeAnimationState();
-    }
-
-   
-
-    absorbDamage(){
-
     }
 
 

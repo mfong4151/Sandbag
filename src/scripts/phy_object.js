@@ -24,18 +24,23 @@ export default class PhysicsObject{
             y: options.defaultPosition.y,
             x2: options.defaultPosition.x + options.width,
             y2: options.defaultPosition.y + options.height,
-            defaultY: options.defaultPosition.y
+            defaultY: options.defaultPosition.y,
+            prev:{
+                x:options.defaultPosition.x,
+                y:options.defaultPosition.y
+            }
         }
+
+       
         this.bounceOffset = options.bounceOffset;
 
         //if character is idle, attack, in jump, etc.
         this.state = 0;
         //We should reevaluate if we need an "in jump"
-        this.gravity = .5;
-        this.drag = 1
+        this.drag = .3
         this.vel ={x: 0, y: 20};
         this.accel= { x:0, y:0 };
-        
+
         this.boundaries = this.setBoundaries(dimensions);
     }
 
@@ -45,7 +50,7 @@ export default class PhysicsObject{
         ceilingBound = 0;
         rightBound = dimensions.width - this.width - CONSTANTS.BOUNCE_OFFSET;
         floorBound = dimensions.floorPlane - this.height + CONSTANTS.BOUNCE_OFFSET;
-    
+        
         return{leftBound,rightBound, floorBound, ceilingBound}
 
     }
@@ -54,8 +59,9 @@ export default class PhysicsObject{
 
     //change countdownOver after we get countdown running
     outOfBounds(countdownOver = false){
-        if(this.pos.x <= this.boundaries.leftBound || this.pos.y <= this.boundaries.ceilingBound 
+        if(this.pos.x <= this.boundaries.leftBound 
             || this.pos.x >= this.boundaries.rightBound){
+            //|| this.pos.y <= this.boundaries.ceilingBound){
             
                 return true;
             }
@@ -80,22 +86,17 @@ export default class PhysicsObject{
         }
         
         if(this.pos.y <= this.boundaries.ceilingBound ){ 
-            this.pos.y2 = 3 + this.height
-            this.direction.vertical *= -1;
+            this.pos.y = 3 
+            this.vel.y *= -1
+            //this.direction.vertical *= -1;
         }
 
         //if(this.pos.y >= this.boundaries.floorBound){
 
         //    this.pos.y = this.boundaries.floorBound - this.height;
         //}
-        console.log(this)
     }
-    moveHorizontal(){
-        
-        
-        this.pos.x += this.vel.x * this.direction.horizontal
-    }
-
+ 
 
 
 
@@ -115,9 +116,6 @@ export default class PhysicsObject{
             }
         }
     }
-   
-   
-
 
     animate(ctx){
         this.update()

@@ -23,16 +23,7 @@ const CONSTANTS = {
         CHARGE_ATTACK: 4
     },
 
-    //ACCELERATION{
-    //    X: 
-    //    Y:
-
-    //}
-
-    //DECELERATION{
-    //    X:
-    //    Y:
-    //}
+    
 
 };
 
@@ -49,22 +40,35 @@ export default class Player extends PhysicsObject{
                                 y: 100,
                                 }
             });
-        
+
+        this.gravity = .5;
         this.activeFrameSet;
         this.frame = 0;
         this.gameFrame = 0;
         this.lightAttack = {
                             attacking: false,
-                            damage: 20,
-                            velocityInput: 50,
+                            damage: .1,
+
+                            velocityInput:{
+                                    x: 40, 
+                                    y: 200 
+                                    },
+
                             animation:{
                                 width: 224,
                                 height: 148
-                            }},
+                            },
+                            areaOfEffect:{
+                                    left: this.pos.x - 40,
+                                    right: this.pos.x + 182,
+                                    up: this.pos.y -30,
+                                    down: this.pos.y2 +120
+                                }
+                            },
 
         this.chargeAttack = {
                                 attacking: false,
-                                damage: 50,
+                                damage: 5,
                                 velocityInput: 200,
                                 animation:{
                                     width: 224,
@@ -73,7 +77,7 @@ export default class Player extends PhysicsObject{
         }
     }
 
-
+    //can be dried up
     frameChoice(){
         if (this.state === CONSTANTS.STATE.IDLE){
              if (this.direction.horizontal === -1) this.activeFrameSet = this.animations.idleLeft;
@@ -94,10 +98,15 @@ export default class Player extends PhysicsObject{
 
     }
 
-    //provisional edit here to test attacking animation
     frameSetAnimation(){
-        
-        if (this.state === CONSTANTS.STATE.IDLE || this.state === CONSTANTS.STATE.ATTACK || this.state === CONSTANTS.STATE.CHARGE_ATTACK){
+        if (this.state === CONSTANTS.STATE.ATTACK || this.state === CONSTANTS.STATE.CHARGE_ATTACK){
+            if (this.gameFrame % 10 === 0){
+              if (this.frame < 4) this.frame++;
+              else this.frame = 0;
+            }
+              this.gameFrame ++ 
+  
+          }else if(this.state === CONSTANTS.STATE.IDLE){
             if (this.gameFrame === 0){
                 if (this.frame < 15) this.frame++;
                 else this.frame = 0;
@@ -122,8 +131,9 @@ export default class Player extends PhysicsObject{
                   if (this.frame < 1) this.frame++;
                   else this.frame = 0;
                 }
+            }
         }
-    }
+    
 
     _drawAttackFrames(ctx){
         ctx.drawImage(
@@ -140,9 +150,10 @@ export default class Player extends PhysicsObject{
         )}
 
     draw(ctx){
+
         this.frameChoice();
     
-        if(this.state === 3) this._drawAttackFrames(ctx);
+        if(this.state === CONSTANTS.STATE.ATTACK) this._drawAttackFrames(ctx);
         else{
         ctx.drawImage(
             this.activeFrameSet,
@@ -162,12 +173,12 @@ export default class Player extends PhysicsObject{
     
     increaseVelX(){
         if (this.vel.x < 12) this.vel.x = 12
-        else if (this.vel.x >= 14 && this.vel.x < 25) this.vel.x += .5
+        else if (this.vel.x >= 14 && this.vel.x < 40) this.vel.x += .5
         
     }
     
-    changeAnimationState(attacking){
-        if(attacking) this.state = CONSTANTS.STATE.ATTACK;
+    changeAnimationState(){
+        if(this.lightAttack.attacking) this.state = CONSTANTS.STATE.ATTACK;
         else if (this.vel.y < 0) this.state = CONSTANTS.STATE.JUMP;
         else if (this.vel.x === 0 && this.vel.y === 0) this.state = CONSTANTS.STATE.IDLE;
         else if (this.vel.y === 0 && this.vel.x > 0) this.state = CONSTANTS.STATE.WALK;
@@ -183,24 +194,49 @@ export default class Player extends PhysicsObject{
         this.vel.y -= 15;
     }
 
-    inLightAttack(){
-        if (this.lightAttack.attacking === true){
+    
+    doLightAttack(){
+        if(!this.lightAttack.attacking)  this.lightAttack.attacking = true;
+    }
+
+    updateLightAttackAOE(){
+        if (this.direction === 1){
+            this.lightAttack.areaOfEffect.left = this.pos.x - 40;
+            this.lightAttack.areaOfEffect.right = this.pos.x + 182;
+        }
+        else{
+            this.lightAttack.areaOfEffect.left = this.pos.x2 - 182;
+            this.lightAttack.areaOfEffect.right = this.pos.x + 40;
+        }
+        this.lightAttack.areaOfEffect.up = this.pos.y -30;
+        this.lightAttack.areaOfEffect.down = this.pos.y2 +120;
+    }
+
+    
+    preformLightAttack(){
+        if (this.lightAttack.attacking){
+            this.updateLightAttackAOE();
+            this.attackFrames;
             this.state = CONSTANTS.STATE.ATTACK;
+          
+            setTimeout(()=>{
+                this.state = CONSTANTS.STATE.IDLE;
+                this.lightAttack.attacking = false;
+                this.frame = 0
+            }, 500)
+
             return true;
         }
         return false;
     }
 
     update(){
-        this.state = CONSTANTS.STATE.ATTACK
-        let attacking = this.inLightAttack() // || this.inChargeAttack()
-        
+    
         this.moveVertical();
         this.moveHorizontal();
+        this.preformLightAttack()
         
-        this.changeAnimationState(attacking);
-    
-        
+        this.changeAnimationState();
     }
     
     endHorizontalMovement(){
@@ -212,39 +248,6 @@ export default class Player extends PhysicsObject{
     }
 
 
-
-    move(wasd){
-        switch (wasd){
-
-                case 'w':
-                    if (this.state !== CONSTANTS.STATE.JUMP)
-                    this.jump();
-                    //this.moveVertical()
-                    //console.log(this.pos.y)
-
-                    break
-                case 'a':
-                    this.direction.horizontal = -1;
-                    this.increaseVelX();
-                    break
-
-                case 'd':
-                    this.direction.horizontal = 1;
-                    this.increaseVelX()
-
-                    break
-
-                case 's':
-                    this.direction.vertical = -1
-                    break
-            }
-    }
-
-
-    doLightAttack(){
-        this.lightAttack.attacking = true;
-    }
-
     doChargeAttack(){
         this.state = CONSTANTS.STATE.CHARGE_ATTACK;
         
@@ -252,6 +255,32 @@ export default class Player extends PhysicsObject{
     releaseChargeAttack(){
 
     }
+
+    move(wasd){
+        switch (wasd){
+
+            case 'w':
+                if (this.state !== CONSTANTS.STATE.JUMP)
+                this.jump();
+
+                break
+            case 'a':
+                this.direction.horizontal = -1;
+                this.increaseVelX();
+                break
+
+            case 'd':
+                this.direction.horizontal = 1;
+                this.increaseVelX()
+
+                break
+
+            case 's':
+                this.direction.vertical = -1
+                break
+        }
+    }
+
 }
 
 //character classes
@@ -269,12 +298,6 @@ class TestChar extends Player{
           )
     }
 }
-
-
-//We should move this to another file after completion, copy paste with the CONSTANTS
-
-
-
 
 
 export {TestChar}; 

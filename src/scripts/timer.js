@@ -1,43 +1,36 @@
-
 export default class Timer{
 
-    constructor(){
-        this.currentTime = new Date().getTime();
-        this.seconds;
+    constructor(dimensions){
+        this.count = 60;
+      }
 
-        
+    decrimentTimer(){
+      setInterval(()=>{
+        if (this.count > 0)this.count --;
+        else{
+          this.count = "GAME OVER"
+          return true;
+        }
+      },1000)
+      
+    }
+
+    checkGameOver(){
+      if (this.count === 0) return true;
+      else return false;
     }
     resetTimer(){
-        this.seconds = 30;
+        this.count = 60;
     }
-    
+    draw(ctx){
+      ctx.font = "30px Calibri"
+      ctx.fillText(this.count, 30, 120)
+    }
 
-}
-
-    // Update the count down every 1 second
-    var x = setInterval(function() {
-
-      // Get today's date and time
-      var now = new Date().getTime();
-
-      // Find the distance between now and the count down date
-      var distance = countDownDate - now;
-
-      // Time calculations for days, hours, minutes and seconds
-      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      // Display the result in the element with id="demo"
-      document.getElementById("demo").innerHTML = days + "d " + hours + "h "
-      + minutes + "m " + seconds + "s ";
-
-      // If the count down is finished, write some text
-      if (distance < 0) {
-        clearInterval(x);
-        document.getElementById("demo").innerHTML = "EXPIRED";
-      }
-    }1000
-
-}
+    update(){
+    }
+    animate(ctx){
+      this.update()
+      this.draw(ctx)
+    }
+  }

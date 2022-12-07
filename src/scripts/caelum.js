@@ -25,7 +25,7 @@ export default class Caelum extends Player{
             './assets/image/character/caelum/attack_left.png',
             './assets/image/character/caelum/attack_right.png'
 
-        ];  d
+        ];
 
         
         for(let i = 0; i < allPaths.length; i++){
