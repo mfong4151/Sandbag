@@ -55,7 +55,7 @@ export default class SandbagTotem extends PhysicsObject{
         this.activeFrameSet;
         this.frame = 0;
         this.gameFrame = 0;
-        this.gravity = .75
+        this.gravity = .60
     }
 
 

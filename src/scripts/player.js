@@ -36,7 +36,7 @@ export default class Player extends PhysicsObject{
                 mass: CONSTANTS.MASS,
                 directionHorizontal: CONSTANTS.DEFAULT_DIRECTION.HORIZONTAL,
                 directionVertical: CONSTANTS.DEFAULT_DIRECTION.VERTICAL,
-                defaultPosition:{x: 100,
+                defaultPosition:{x: dimensions.width/4,
                                 y: 100,
                                 }
             });
@@ -47,11 +47,11 @@ export default class Player extends PhysicsObject{
         this.gameFrame = 0;
         this.lightAttack = {
                             attacking: false,
-                            damage: .1,
+                            damage: .20,
 
                             velocityInput:{
-                                    x: 40, 
-                                    y: 200 
+                                    x: 20, 
+                                    y: 40 
                                     },
 
                             animation:{

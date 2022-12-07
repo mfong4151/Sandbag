@@ -5,7 +5,6 @@ const CONSTANTS = {
                         }
             }
 
-
 export default class OffScreenSandbag{
     constructor(){
             this.activeFrameSet;
@@ -28,7 +27,6 @@ export default class OffScreenSandbag{
             './assets/image/offscreen_mushroom/mushroom_left.png',
             './assets/image/offscreen_mushroom/mushroom_right.png'
         ];
-        console.log(allAnimations)
         
         for(let i = 0; i < allPaths.length; i++){
             allAnimations[i].src = allPaths[i]
@@ -56,7 +54,6 @@ export default class OffScreenSandbag{
     draw(ctx, sandbag){
 
         this.frameChoice(sandbag);
-        console.log(this.activeFrameSet, this)
         ctx.drawImage(this.activeFrameSet, 0, 0, this.width, this.height, 
                     this.pos.x, this.pos.y, this.width, this.height);
 
@@ -70,9 +67,7 @@ export default class OffScreenSandbag{
     animate(ctx, sandbag){
         
         if (this.sandbagOffScreen(sandbag)){
-            this.update(sandbag)
-             this.draw(ctx, sandbag);
+            this.draw(ctx, sandbag);
         }
     }
-
 }

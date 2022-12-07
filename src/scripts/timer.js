@@ -24,7 +24,7 @@ export default class Timer{
     }
     draw(ctx){
       ctx.font = "30px Calibri"
-      ctx.fillText(this.count, 30, 120)
+      ctx.fillText(`Time left: ${this.count}`, 30, 120)
     }
 
     update(){

@@ -32,13 +32,14 @@ export default class Game{
         this.checkGameOver = this.timer.checkGameOver()
         this.ctx.clearRect(0, 0, this.mapDimensions.width, this.mapDimensions.height)
         this.background.animate(this.ctx);
+        this.sandbagOffScreen.animate(this.ctx, this.sandbag);
         this.scoreCounter.updateDistanceTraveled(this.sandbag);
+        this.scoreCounter.updateMaxHeightYeeted(this.sandbag.pos.y);
         this.scoreCounter.updatePreviousPos(this.sandbag);
         this.scoreCounter.animate(this.ctx, this.sandbag);
         this.timer.animate(this.ctx)
         this.sandbag.faceCharacter(this.player);
         this.sandbag.animate(this.ctx);
-        this.sandbagOffScreen.animate(this.ctx, this.sandbag);
         this.player.animate(this.ctx);
         //this.specialEffects.animate(this.ctx, this.player.state); //should animate left or right spear effects
         //this.specialEffect.animate(this.ctx, this.sandbag.state)//should animate damaged animation
