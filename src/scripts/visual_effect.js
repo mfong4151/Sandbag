@@ -1,22 +1,27 @@
 const CONSTANTS = {
-    FRAME_SIZE: {WIDTH: 255,
-                HEIGHT: 213
-                }
-    }
+    FRAME_SIZE:{DRAGON_SPEAR :{WIDTH: 255,
+                                HEIGHT: 213
+                                },
+
+                SHOCKWAVE: {
+                            WIDTH:172,
+                            HEIGHT:136
+                            }
+            }
+            }
 
 
 export default class VisualEFX{
 
     constructor(){
-        this.frameSet = importSpriteSheets()
+        this.frameSet = importSpriteSheets();
         this.activeFrameSet;
-        this.width= CONSTANTS.FRAME_SIZE.WIDTH;
-        this.height = CONSTANTS.FRAME_SIZE.HEIGHT;
-        this.pos= {
-            x: 0,
-            y:0,
-        },
-        this.frameSet = this.importSpriteSheets()
+        this.frameSize = CONSTANTS.FRAME_SIZE;
+        this.frame = 0;
+        this.gameFrame = 0;
+        this.width;
+        this.height;
+        
     }
 
     importSpriteSheets(){
@@ -25,7 +30,7 @@ export default class VisualEFX{
 
         const allAnimations = [damageEffect, dragonSpearLeft, dragonSpearRight]
         const allPaths =[
-            './assets/image/',
+            './assets/image/special_effects/dragoon_slam_0_1.png',
             './assets/image/special_effects/dragon_spear_left.png',
             './assets/image/special_effects/dragon_spear_right.png',
         ];
@@ -38,19 +43,41 @@ export default class VisualEFX{
 
     }
 
-    //EDIT THIS
+    //edit this for dragon spear
     frameChoice(){
         if (sandbag.direction.horizontal === -1) this.activeFrameSet = this.frameSet.mushroomLeft;
         else this.activeFrameSet = this.frameSet.mushroomRight;
     }
     
+    checkSandbagDamaged(sandbag){
+        if(sandbag.state === 1) return true
+        else return false
+    }
 
-    draw(ctx, ){
+    frameSetAnimation(){
+        if (this.state === CONSTANTS.STATE.ATTACK || this.state === CONSTANTS.STATE.CHARGE_ATTACK){
+            if (this.gameFrame % 10 === 0){
+              if (this.frame < 4) this.frame++;
+              else this.frame = 0;
+            }
+              this.gameFrame ++ 
+        }
 
-        this.frameChoice();
-        ctx.drawImage(this.activeFrameSet, 0, 0, this.width, this.height, 
-                    this.pos.x, this.pos.y, this.width, this.height);
-
+    }
+    drawDamageEffect(ctx){
+        
+        ctx.drawImage(
+            this.frameSet.damageEffect,
+             this.frame * this.width,
+             0,
+             this.width,
+             this.height,
+            this.pos.x,
+            this.pos.y,
+            this.width,
+            this.height
+            )
+        this.frameSetAnimation();
     }
 
 
@@ -60,9 +87,9 @@ export default class VisualEFX{
 
 
 
-    animate(ctx){
-        this.update()
-        this.draw(ctx);
+    animate(ctx, sandbag){
+        if (this.checkSandbagDamaged()) this.drawDamageEffect(ctx)
+
     }
 
 
