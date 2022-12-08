@@ -21,7 +21,6 @@ export default class VisualEFX{
         this.gameFrame = 0;
         this.width;
         this.height;
-        
     }
 
     importSpriteSheets(){
@@ -68,14 +67,14 @@ export default class VisualEFX{
         
         ctx.drawImage(
             this.frameSet.damageEffect,
-             this.frame * this.width,
+             this.frame * this.frameSize.damageEffect.width,
              0,
-             this.width,
-             this.height,
+             this.frameSize.damageEffect.width,
+             this.frameSize.damageEffect.height,
             this.pos.x,
             this.pos.y,
-            this.width,
-            this.height
+            this.frameSize.damageEffect.width,
+            this.frameSize.damageEffect.height,
             )
         this.frameSetAnimation();
     }
