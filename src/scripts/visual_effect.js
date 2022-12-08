@@ -64,7 +64,7 @@ export default class VisualEFX{
 
     }
     drawDamageEffect(ctx){
-        
+        //come back to this later
         ctx.drawImage(
             this.frameSet.damageEffect,
              this.frame * this.frameSize.damageEffect.width,
