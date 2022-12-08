@@ -54,7 +54,7 @@ export default class VisualEFX{
     }
 
     frameSetAnimation(){
-        if (this.state === CONSTANTS.STATE.ATTACK || this.state === CONSTANTS.STATE.CHARGE_ATTACK){
+        if (this.activeFrameSet === this.frameSet.damageEffect){
             if (this.gameFrame % 10 === 0){
               if (this.frame < 4) this.frame++;
               else this.frame = 0;
@@ -65,6 +65,7 @@ export default class VisualEFX{
     }
     drawDamageEffect(ctx){
         //come back to this later
+        this.activeFrameSet = this.frameSet.damageEffect;
         ctx.drawImage(
             this.frameSet.damageEffect,
              this.frame * this.frameSize.damageEffect.width,
