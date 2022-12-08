@@ -14,25 +14,30 @@ const CONSTANTS = {
 export default class VisualEFX{
 
     constructor(){
-        this.frameSet = importSpriteSheets();
+        this.frameSet = this.importSpriteSheets();
         this.activeFrameSet;
         this.frameSize = CONSTANTS.FRAME_SIZE;
         this.frame = 0;
         this.gameFrame = 0;
         this.width;
         this.height;
+        this.animateEffect = false
+        this.effectPos = {x: 0,
+                                y:0
+                                }
     }
 
     importSpriteSheets(){
 
-        let damageEffect, dragonSpearLeft, dragonSpearRight
-
-        const allAnimations = [damageEffect, dragonSpearLeft, dragonSpearRight]
+        let damageEffect = new Image();
+        let dragonSpearLeft = new Image(), dragonSpearRight = new Image();
+ 
+        const allAnimations = [damageEffect]; // dragonSpearLeft, dragonSpearRight]
         const allPaths =[
-            './assets/image/special_effects/dragoon_slam_0_1.png',
-            './assets/image/special_effects/dragon_spear_left.png',
-            './assets/image/special_effects/dragon_spear_right.png',
-        ];
+            './assets/image/special_effects/dragoon_slam_full_frames.png',];
+            //'./assets/image/special_effects/dragon_spear_left.png',
+            //'./assets/image/special_effects/dragon_spear_right.png',
+
 
         
         for(let i = 0; i < allPaths.length; i++){
@@ -48,15 +53,24 @@ export default class VisualEFX{
         else this.activeFrameSet = this.frameSet.mushroomRight;
     }
     
-    checkSandbagDamaged(sandbag){
-        if(sandbag.state === 1) return true
-        else return false
+    checkSandbagDamaged(sandbag, player){
+        if(sandbag.state === 1 && !this.animateEffect && player.pos.y === 506.5){
+            this.animateEffect = true;
+            this.effectPos.x = sandbag.pos.x;
+            this.effectPos.y = sandbag.pos.y;
+            setTimeout(() => {
+                this.animateEffect = false;
+
+            }, 1000)
+
+        }
+        
     }
 
     frameSetAnimation(){
         if (this.activeFrameSet === this.frameSet.damageEffect){
-            if (this.gameFrame % 10 === 0){
-              if (this.frame < 4) this.frame++;
+            if (this.gameFrame % 5 === 0){
+              if (this.frame < 5) this.frame++;
               else this.frame = 0;
             }
               this.gameFrame ++ 
@@ -67,15 +81,15 @@ export default class VisualEFX{
         //come back to this later
         this.activeFrameSet = this.frameSet.damageEffect;
         ctx.drawImage(
-            this.frameSet.damageEffect,
-             this.frame * this.frameSize.damageEffect.width,
+            this.activeFrameSet,
+             this.frame * this.frameSize.SHOCKWAVE.WIDTH,
              0,
-             this.frameSize.damageEffect.width,
-             this.frameSize.damageEffect.height,
-            this.pos.x,
-            this.pos.y,
-            this.frameSize.damageEffect.width,
-            this.frameSize.damageEffect.height,
+             this.frameSize.SHOCKWAVE.WIDTH,
+             this.frameSize.SHOCKWAVE.HEIGHT,
+             this.effectPos.x- 22,
+             this.effectPos.y + 20,
+            this.frameSize.SHOCKWAVE.WIDTH,
+            this.frameSize.SHOCKWAVE.HEIGHT,
             )
         this.frameSetAnimation();
     }
@@ -87,8 +101,9 @@ export default class VisualEFX{
 
 
 
-    animate(ctx, sandbag){
-        if (this.checkSandbagDamaged()) this.drawDamageEffect(ctx)
+    animate(ctx, sandbag, player){
+        this.checkSandbagDamaged(sandbag, player)
+        if (this.animateEffect) this.drawDamageEffect(ctx)
 
     }
 

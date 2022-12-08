@@ -4,6 +4,7 @@ import Background from "./background";
 import Counter from "./counter"
 import Timer from "./timer"
 import OffScreenSandbag from "./offscreen";
+import VisualEFX from "./visual_effect";
 
 export default class Game{
 
@@ -14,7 +15,7 @@ export default class Game{
                         height: canvas.height,
                         floorPlane: 586
                         };
-        
+        this.visualEFX = new VisualEFX();
         this.player = new Caelum(this.mapDimensions);
         this.sandbag= new SandbagTotem(this.mapDimensions);
         this.sandbagOffScreen = new OffScreenSandbag();
@@ -45,7 +46,7 @@ export default class Game{
         //this.specialEffects.animate(this.ctx, this.player.state); //should animate left or right spear effects
         //this.specialEffect.animate(this.ctx, this.sandbag.state)//should animate damaged animation
         if(this.sandbag.inCollision(this.player)){
-            this.sandbag.convertMomentum(this.player)
+            this.sandbag.convertMomentum(this.player);
         }
         if (this.player.outOfBounds()) this.player.bounce();
         
