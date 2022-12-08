@@ -8,7 +8,7 @@ export default class Timer{
       setInterval(()=>{
         if (this.count > 0)this.count --;
         else{
-          this.count = "GAME OVER"
+          this.count = 0;
           return true;
         }
       },1000)
@@ -16,16 +16,19 @@ export default class Timer{
     }
 
     checkGameOver(){
-      if (this.count === 0) return true;
+      if (this.count <= 0) return true;
       else return false;
     }
-    resetTimer(){
+    reset(){
         this.count = 60;
     }
     draw(ctx){
       ctx.font = "30px Calibri"
-      ctx.fillText(`Time left: ${this.count}`, 30, 120)
+      if (this.count > 0) ctx.fillText(`Time left: ${this.count}`, 30, 120)
+      else ctx.fillText(`Time left: GAME OVER`, 30, 120)
     }
+
+
 
     update(){
     }

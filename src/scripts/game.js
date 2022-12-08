@@ -29,6 +29,7 @@ export default class Game{
     //Main gameplay loop
 
     animate(){
+
         this.checkGameOver = this.timer.checkGameOver()
         this.ctx.clearRect(0, 0, this.mapDimensions.width, this.mapDimensions.height)
         this.background.animate(this.ctx);
@@ -48,14 +49,22 @@ export default class Game{
         }
         if (this.player.outOfBounds()) this.player.bounce();
         
-        if (this.sandbag.outOfBounds())this.sandbag.bounce();
+        if (this.sandbag.outOfBounds()) this.sandbag.bounce();
         
+        if (this.timer.checkGameOver()) this.scoreCounter.animateEndgame(this.ctx);
+        
+
+
         if (this.activeGame) {
             requestAnimationFrame(this.animate.bind(this));
           }        
     }
 
 
+    restart(){
+        this.player.reset();
+        this.sandbag.reset;
+    }
 
     play(){
         this.activeGame = true;
@@ -65,8 +74,10 @@ export default class Game{
     }
     //resets bag pos, resets char pos
     reset(){
-        this.player.reset();
-        this.sandbag.reset();
+        this.player.reset(this.mapDimensions);
+        this.sandbag.reset(this.mapDimensions);
+        this.timer.reset();
+        this.scoreCounter.reset();
     }
 
 
@@ -103,14 +114,6 @@ export default class Game{
         this.player.doLightAttack();
     }
 
-    //Once the bag is attacked, we want to change
-    changeCameraFocus(){
-
-    }
-
-    chooseChar(){
-
-    }
 
   
 }

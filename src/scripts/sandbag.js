@@ -4,12 +4,15 @@ import PhysicsObject from "./phy_object";
 const CONSTANTS = {
     HEIGHT: 150,
     WIDTH: 130,
-    MASS: 40,
+    MASS: 80,
     DEFAULT_DIRECTION:{
         HORIZONTAL: -1,
         VERTICAL: -1
     },  //refers to the direction we're facing, 1 = right, -1 = left
-    DEFAULT_ACCEL: 0,
+    DEFAULT_POS: {
+                X: 2,
+                Y:0
+                },
     DEFAULT_VEL: 0,
     DEFAULT_HP: 1,
     GRAVITY: 4.8,
@@ -45,7 +48,7 @@ export default class SandbagTotem extends PhysicsObject{
             testColor: CONSTANTS.TEST_COLOR,
             bounceOffset: CONSTANTS.BOUNCE_OFFSET,
             defaultPosition:{x: dimensions.width/2,
-                y: 100
+                y: 0
             }
         });
         this.animationDirection =  CONSTANTS.DEFAULT_DIRECTION.HORIZONTAL
@@ -119,9 +122,7 @@ export default class SandbagTotem extends PhysicsObject{
         //}
 
     }
-    
-
-   
+       
     inCollision(playerChar){
 
 
@@ -231,14 +232,15 @@ export default class SandbagTotem extends PhysicsObject{
 
     }
     
-    reset(){
-        this.pos.x = CONSTANTS.DEFAULT_POS_X;
-        this.pos.x = CONSTANTS.DEFAULT_POS_Y;
-        this.vel.x = CONSTANTS.DEFAULT_VEL;
-        this.vel.y = CONSTANTS.DEFAULT_VEL;
-        this.accel.x = CONSTANTS.DEFAULT_ACCEL;
-        this.accel.y = CONSTANTS.DEFAULT_ACCEL;
-        this.direction = CONSTANTS.DEFAULT_DIRECTION;
+    
+    reset(dimensions){
+        this.pos.x = 800;
+        this.pos.y = 0;
+        
+        
         this.hp = CONSTANTS.DEFAULT_HP;
     }
+    
+        
+     
 }

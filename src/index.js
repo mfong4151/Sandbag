@@ -2,7 +2,6 @@ import Game from "./scripts/game";
 
 
 const observer = new IntersectionObserver((entries)=>{
-    console.log(entries)
     entries.forEach((entry) =>{
 
         if(entry.isIntersecting) entry.target.classList.add('show');
@@ -12,11 +11,18 @@ const observer = new IntersectionObserver((entries)=>{
     });
 });
 
+
 const hiddenElements = document.querySelectorAll('.hidden');
 hiddenElements.forEach((el) => observer.observe(el));
 
-const canvas = document.getElementById("sandbag-game");
-//canvas.setAttribute("width", window.innerWidth);
+const toggleMusic = document.getElementById("mute-button"), restartButton = document.getElementById("restart-button"), canvas = document.getElementById("sandbag-game");
+const backgroundMusic = document.createElement("audio");
+backgroundMusic.src = "./assets/sound/galdin_quay.mp3";
+backgroundMusic.volume = 0.5;
+let musicStarted = false;
+//backgroundMusic.play();
+
+
 let game = new Game(canvas);
 game.play();
 
@@ -25,8 +31,17 @@ window.addEventListener('keyup', (event) => game.convertKeyRelease(event.key))
 
 window.addEventListener('click', () => game.convertLeftClick());
 
-//game.readUserInput.bind(game));
+toggleMusic.addEventListener("click", ()=>{
+    if(!musicStarted){
+        backgroundMusic.play();
+        musicStarted = true;
+    }else if (musicStarted && backgroundMusic.volume !== 0){
+        backgroundMusic.volume = 0;
+    }else {
+        backgroundMusic.volume = 0.5;
+    } 
+})
 
-
-
-
+restartButton.addEventListener("click", ()=>{
+    game.reset();
+})

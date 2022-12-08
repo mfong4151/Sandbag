@@ -7,9 +7,12 @@ const CONSTANTS = {
     MASS: 40,
     BOUNCE_OFFSET: 3,
     DEFAULT_DIRECTION:{
-        HORIZONTAL: 1,
-        VERTICAL: -1
-    },  //refers to the direction we're facing, 1 = right, -1 = left
+                        HORIZONTAL: 1,
+                        VERTICAL: -1
+                        },  //refers to the direction we're facing, 1 = right, -1 = left
+    DEFAULT_POSITION: { x:4,
+                        y:0,
+                        },
     TEST_COLOR :'blue',
     DEFAULT_ACCEL: 0,
     DEFAULT_VEL: 0,
@@ -22,6 +25,15 @@ const CONSTANTS = {
         ATTACK: 3,
         CHARGE_ATTACK: 4
     },
+
+    LIGHT_ATTACK:{
+        DAMAGE: .2,
+        VELOCITY_INPUT:{
+            X:15,
+            Y:30,
+        }
+        
+    }
 
     
 
@@ -47,11 +59,11 @@ export default class Player extends PhysicsObject{
         this.gameFrame = 0;
         this.lightAttack = {
                             attacking: false,
-                            damage: .20,
+                            damage: CONSTANTS.LIGHT_ATTACK.DAMAGE,
 
                             velocityInput:{
-                                    x: 20, 
-                                    y: 40 
+                                    x: CONSTANTS.LIGHT_ATTACK.VELOCITY_INPUT.X, 
+                                    y: CONSTANTS.LIGHT_ATTACK.VELOCITY_INPUT.Y 
                                     },
 
                             animation:{
@@ -279,6 +291,16 @@ export default class Player extends PhysicsObject{
                 this.direction.vertical = -1
                 break
         }
+    }
+
+    reset(dimensions){
+        this.pos= {x: dimensions.width/4,
+                                    y: 0
+                                    },
+        this.vel = {
+                    x: 0,
+                    y: 0
+                    }
     }
 
 }
