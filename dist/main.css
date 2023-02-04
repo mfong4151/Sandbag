@@ -9,6 +9,17 @@
   color: white;
   display: flex;
   justify-content: space-evenly;
+  align-items: center;
+}
+
+.title-lr {
+  width: 100px;
+}
+
+#link-holder {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
 #sandbag-game {
@@ -52,6 +63,10 @@
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10%;
+}
+
+.github-linkedin {
+  height: 30px;
 }
 
 h2 {
