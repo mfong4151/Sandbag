@@ -28,7 +28,7 @@ game.play();
 
 window.addEventListener('keydown', (event) => game.convertKeydown(event.key))
 window.addEventListener('keyup', (event) => game.convertKeyRelease(event.key))
-
+window.addEventListener('keydown', e=> {if(e.keyCode=== 32) e.preventDefault()})
 window.addEventListener('click', () => game.convertLeftClick());
 
 toggleMusic.addEventListener("click", ()=>{

@@ -35,8 +35,8 @@ export default class Game{
         this.ctx.clearRect(0, 0, this.mapDimensions.width, this.mapDimensions.height)
         this.background.animate(this.ctx);
         this.sandbagOffScreen.animate(this.ctx, this.sandbag);
-        this.scoreCounter.updateDistanceTraveled(this.sandbag);
-        this.scoreCounter.updateMaxHeightYeeted(this.sandbag.pos.y);
+        this.scoreCounter.updateDistanceTraveled(this.sandbag, this.timer.count);
+        this.scoreCounter.updateMaxHeightYeeted(this.sandbag.pos.y, this.timer.count);
         this.scoreCounter.updatePreviousPos(this.sandbag);
         this.scoreCounter.animate(this.ctx, this.sandbag);
         this.timer.animate(this.ctx)
