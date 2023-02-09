@@ -22,7 +22,7 @@ Left click to launch the mushroom, WASD to move. That's it. A toggle button and 
 
 The Mushroom Juggler runs completely in Vanilla Javascript/HTML and is completely DOM based.
 
-```
+```javascript
 const observer = new IntersectionObserver((entries)=>{
     entries.forEach((entry) =>{
 
