@@ -1,4 +1,4 @@
-# Mushroom Juggle
+# The Mushroom Juggler
 
 Based on the sandbag minigame from the Super Smash Bros series: https://www.youtube.com/watch?v=soriF9HdJsY.
 
